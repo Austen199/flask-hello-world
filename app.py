@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 import subprocess
-import json
 
 app = Flask(__name__)
 
@@ -11,20 +10,15 @@ def process_youtube_url():
 
     if youtube_url:
         try:
-            # Construct the command based on the provided URL
-            output_file = f"{youtube_url.split('=')[-1]}.json"
-            command = f"youtube-comment-downloader --url {youtube_url} --output {output_file}"
-
+            # Construct the modified command based on the provided URL
+            command = f"youtube-comment-downloader --url {youtube_url} --pretty --output /dev/stdout"
+            
             # Run the command using subprocess
             result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
             # Check if the command was successful
             if result.returncode == 0:
-                # Read the content of the saved JSON file
-                with open(output_file, 'r') as file:
-                    json_content = file.read()
-
-                response = {"status": "success", "output": json_content}
+                response = {"status": "success", "output": result.stdout}
             else:
                 response = {"status": "error", "output": result.stderr}
 
