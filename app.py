@@ -26,7 +26,7 @@ def process_youtube_url():
 
                 # Check if the upload command was successful
                 if upload_result.returncode == 0:
-                    response = {"status": "success", "download_output": download_result.stdout, "upload_output": upload_result.stdout}
+                    response = {"status": "success", "upload_output": upload_result.stdout}
                 else:
                     response = {"status": "error", "message": f"Upload failed: {upload_result.stderr}"}
             else:
