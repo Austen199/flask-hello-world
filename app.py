@@ -11,8 +11,8 @@ def process_youtube_url():
     if youtube_url:
         try:
             # Construct the command based on the provided URL
-            command = f"youtube-comment-downloader --url {youtube_url} --output {youtube_url.split('=')[-1]}.json"
-            
+            command = f"youtube-comment-downloader --url {youtube_url} --pretty"
+
             # Run the command using subprocess
             result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
@@ -32,4 +32,3 @@ def process_youtube_url():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
