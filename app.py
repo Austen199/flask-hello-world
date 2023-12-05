@@ -16,24 +16,17 @@ def process_youtube_url():
     if youtube_url:
         try:
             # Construct the command to download comments
-            download_command = f"youtube-comment-downloader --url {youtube_url} --pretty --output {youtube_url.split('=')[-1]}.json"
+            download_command = f"youtube-comment-downloader --url {youtube_url} --pretty --output /dev/stdout"
             
-            # Run the download command using subprocess, capturing both stdout and stderr
+            # Run the download command using subprocess
             download_result = subprocess.run(download_command, shell=True, capture_output=True, text=True)
 
             # Check if the download command was successful
             if download_result.returncode == 0:
-                # Read the content of the downloaded JSON file
-                json_file_path = f"./{youtube_url.split('=')[-1]}.json"
-                with open(json_file_path, 'r') as json_file:
-                    json_content = json_file.read()
-
-                # Remove the JSON file after reading its content
-                os.remove(json_file_path)
-
+                json_content = download_result.stdout
                 response = {"status": "success", "json_content": json_content}
             else:
-                response = {"status": "error", "message": f"Download failed: {download_result.stderr}", "full_output": download_result.stdout}
+                response = {"status": "error", "message": f"Download failed: {download_result.stderr}"}
 
         except Exception as e:
             response = {"status": "error", "message": str(e)}
