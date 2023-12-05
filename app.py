@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import subprocess
 
-app = Flask(__name__, static_folder='static', template_folder='static')
+app = Flask(__name__)
 
-# Main path route
+# Main route to serve the HTML files
 @app.route('/')
 def main():
-    return render_template('index.html')  # Assuming index.html is your main page
+    return render_template('html/index.html')
 
-# Export route
+# Export route to handle the export functionality
 @app.route('/export/', methods=['GET'])
 def process_youtube_url():
     # Get the 'url' parameter from the query string
