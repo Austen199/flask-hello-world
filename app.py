@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import subprocess
+import os
 
 app = Flask(__name__)
 
@@ -22,17 +23,15 @@ def process_youtube_url():
 
             # Check if the download command was successful
             if download_result.returncode == 0:
-                # Construct the command to upload the JSON file using curl
-                upload_command = f"curl --upload-file ./{youtube_url.split('=')[-1]}.json https://transfer.sh/{youtube_url.split('=')[-1]}.json"
+                # Read the content of the downloaded JSON file
+                json_file_path = f"./{youtube_url.split('=')[-1]}.json"
+                with open(json_file_path, 'r') as json_file:
+                    json_content = json_file.read()
 
-                # Run the upload command using subprocess
-                upload_result = subprocess.run(upload_command, shell=True, capture_output=True, text=True)
+                # Remove the JSON file after reading its content
+                os.remove(json_file_path)
 
-                # Check if the upload command was successful
-                if upload_result.returncode == 0:
-                    response = {"status": "success", "upload_output": upload_result.stdout}
-                else:
-                    response = {"status": "error", "message": f"Upload failed: {upload_result.stderr}"}
+                response = {"status": "success", "json_content": json_content}
             else:
                 response = {"status": "error", "message": f"Download failed: {download_result.stderr}"}
 
