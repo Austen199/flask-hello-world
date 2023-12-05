@@ -1,8 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 import subprocess
 
-app = Flask(__name__, static_folder='static', static_url_path='/export/static')
+app = Flask(__name__, static_folder='static')
 
+# Main path route
+@app.route('/')
+def main():
+    return render_template('index.html')  # Assuming index.html is your main page
+
+# Export route
 @app.route('/export/', methods=['GET'])
 def process_youtube_url():
     # Get the 'url' parameter from the query string
