@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import subprocess
 
-app = Flask(__name__, static_folder='static')
+app = Flask(__name__, static_folder='static', template_folder='static')
 
 # Main path route
 @app.route('/')
