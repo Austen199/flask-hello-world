@@ -3,6 +3,12 @@ import subprocess
 
 app = Flask(__name__, static_folder='static', static_url_path='/export/static')
 
+# Main path route
+@app.route('/')
+def main():
+    return render_template('index.html')  # Assuming index.html is your main page
+
+
 @app.route('/export/', methods=['GET'])
 def process_youtube_url():
     # Get the 'url' parameter from the query string
