@@ -18,7 +18,7 @@ def process_youtube_url():
             # Construct the command to download comments
             download_command = f"youtube-comment-downloader --url {youtube_url} --pretty --output {youtube_url.split('=')[-1]}.json"
             
-            # Run the download command using subprocess
+            # Run the download command using subprocess, capturing both stdout and stderr
             download_result = subprocess.run(download_command, shell=True, capture_output=True, text=True)
 
             # Check if the download command was successful
@@ -33,7 +33,7 @@ def process_youtube_url():
 
                 response = {"status": "success", "json_content": json_content}
             else:
-                response = {"status": "error", "message": f"Download failed: {download_result.stderr}"}
+                response = {"status": "error", "message": f"Download failed: {download_result.stderr}", "full_output": download_result.stdout}
 
         except Exception as e:
             response = {"status": "error", "message": str(e)}
