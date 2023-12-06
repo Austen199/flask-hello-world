@@ -72,7 +72,7 @@
         // Show spinner instead of input and button
         responseDiv.innerHTML = `<span class="loader"></span>`;
 
-        const apiUrl = `http://127.0.0.1:5000/export/?url=${encodeURIComponent(urlInput.value)}`;
+        const apiUrl = `/export/?url=${encodeURIComponent(urlInput.value)}`;
 
         // You can use fetch or any other AJAX library to make the request
         fetch(apiUrl)
