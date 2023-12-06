@@ -9,7 +9,28 @@
     <link rel="stylesheet" href="style.css">
 	</head>
 
-</head>
+<style>
+    .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid;
+        border-color: #FF3D00 transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
 <body>
     <div class="container shadow-lg p-3 mb-5 bg-body-tertiary rounded">
         <div class="row ">
@@ -36,23 +57,69 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="app.js"></script>
-    <script>
-        function exportComments(event) {
-            event.preventDefault();
-            const urlInput = document.getElementById('url');
-            const apiUrl = `https://exportcomments.onrender.com/export/?url=${encodeURIComponent(urlInput.value)}`;
 
-            // You can use fetch or any other AJAX library to make the request
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const responseDiv = document.getElementById('response');
-                    responseDiv.innerHTML = `<p>API Response: ${JSON.stringify(data)}</p>`;
-                })
-                .catch(error => {
-                    console.error('Error fetching comments:', error);
-                });
-        }
-    </script>
+
+<script>
+    function exportComments(event) {
+        event.preventDefault();
+        const urlInput = document.getElementById('url');
+        const exportButton = event.target.querySelector('.btn.btn-primary.m-2'); // Reference the button using its class
+        const responseDiv = document.getElementById('response');
+
+        // Disable the export button
+        exportButton.disabled = true;
+
+        // Show spinner instead of input and button
+        responseDiv.innerHTML = `<span class="loader"></span>`;
+
+        const apiUrl = `http://127.0.0.1:5000/export/?url=${encodeURIComponent(urlInput.value)}`;
+
+        // You can use fetch or any other AJAX library to make the request
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Show success message
+                    responseDiv.innerHTML = `<p>Your comments are ready to download:</p>`;
+
+                    // Show download button below the input and button
+                    const downloadButton = document.createElement('a');
+                    downloadButton.href = data.upload_output;
+                    downloadButton.target = '_blank';
+                    downloadButton.className = 'btn btn-success m-2';
+                    downloadButton.textContent = 'Download Comments';
+                    responseDiv.appendChild(downloadButton);
+
+                    // Show export new video comments button
+                    const exportNewButton = document.createElement('button');
+                    exportNewButton.className = 'btn btn-primary m-2';
+                    exportNewButton.textContent = 'Export New Video Comments';
+                    exportNewButton.addEventListener('click', () => {
+                        // Reload the page to show the initial input and button
+                        window.location.reload();
+                    });
+                    responseDiv.appendChild(exportNewButton);
+
+                    // Hide the input and original export button
+                    urlInput.style.display = 'none';
+                    exportButton.style.display = 'none';
+                } else {
+                    // Show error message
+                    responseDiv.innerHTML = `<p>Error fetching comments. Please try again.</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching comments:', error);
+                responseDiv.innerHTML = `<p>Error fetching comments. Please try again.</p>`;
+            })
+            .finally(() => {
+                // Re-enable the export button
+                exportButton.disabled = false;
+            });
+    }
+</script>
+
+
+
 </body>
 </html>
